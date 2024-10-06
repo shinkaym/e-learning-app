@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { dm_sans, manrope, roboto } from '@/components/font';
+import { manrope } from '@/utils';
+import Sidebar from '@/components/layout/Sidebar';
 
 export const metadata: Metadata = {
   title: "Ucademy",
@@ -15,9 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dm_sans.className} ${manrope.variable} ${roboto.variable}}`}
+        className={`${manrope.variable}`}
       >
-        {children}
+        <div className="wrapper grid grid-cols-[300px,minmax(0,1fr)] h-screen">
+          <Sidebar />
+          <main>{children}</main>
+        </div>
       </body>
     </html>
   );
