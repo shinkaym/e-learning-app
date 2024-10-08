@@ -12,7 +12,10 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
-  			primary: '#615efc'
+  			primary: '#615efc',
+				grayDarkest: '#131316',
+				grayDarker: '#212126',
+				grayDark: '#9394A1'
   		},
   		fontFamily: {
   			primary: ["var(--font-manrope)"]
