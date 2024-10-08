@@ -1,9 +1,18 @@
-import React from 'react'
+import Heading from '@/components/typography/Heading';
+import CourseItem from '@/components/course/CourseItem';
+import React from 'react';
 
 const page = () => {
   return (
-    <div>page</div>
-  )
-}
+    <div>
+      <Heading>Khám phá</Heading>
+      <div className="grid grid-cols-3 gap-8 mt-8">
+        <CourseItem></CourseItem>
+        <CourseItem></CourseItem>
+        <CourseItem></CourseItem>
+      </div>
+    </div>
+  );
+};
 
-export default page
+export default page;
