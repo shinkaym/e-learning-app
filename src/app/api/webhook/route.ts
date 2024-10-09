@@ -23,6 +23,7 @@ export async function POST(req: Request) {
       'svix-timestamp': svix_timestamp,
       'svix-signature': svix_signature,
     }) as WebhookEvent;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return new Response('Bad Request', { status: 400 });
