@@ -1,22 +1,26 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { IconClock, IconEye, IconStar } from '../icons';
 import { ICourse } from '@/database/course.model';
+import { ObjectId } from 'mongoose';
 
 const CourseItem = ({ data }: { data: ICourse }) => {
-  const courseInfo = [
+  const courseInfo: {
+    title: string | number | ObjectId;
+    icon: (className?: string) => ReactNode;
+  }[] = [
     {
       title: data.views,
-      icon: (className?: string) => <IconEye className={className}></IconEye>,
+      icon: (className?: string) => <IconEye className={className} />,
     },
     {
       title: data.rating[0],
-      icon: (className?: string) => <IconStar className={className}></IconStar>,
+      icon: (className?: string) => <IconStar className={className} />,
     },
     {
       title: '25h30',
-      icon: (className?: string) => <IconClock className={className}></IconClock>,
+      icon: (className?: string) => <IconClock className={className} />,
     },
   ];
   
@@ -42,7 +46,7 @@ const CourseItem = ({ data }: { data: ICourse }) => {
           {courseInfo.map((item, index) => (
             <div className='flex items-center gap-1' key={index}>
               {item.icon('size-4')}
-              <span>{item.title}</span>
+              <span>{item.title?.toString()}</span>
             </div>
           ))}
           <span className='font-semibold text-primary ml-auto text-base'>{data.price}</span>
