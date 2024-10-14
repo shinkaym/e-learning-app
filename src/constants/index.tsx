@@ -1,6 +1,6 @@
 import { IconComment, IconExplore, IconOrder, IconPlay, IconStudy, IconUsers } from '@/components/icons'
 import { TMenuItem } from '@/types'
-
+import { ECourseLevel, ECourseStatus } from '@/types/enums';
 
 export const menuItems: TMenuItem[] = [
   {
@@ -34,3 +34,43 @@ export const menuItems: TMenuItem[] = [
     icon: <IconComment className='size-5' />,
   },
 ]
+
+export const courseStatus: {
+  title: string;
+  value: ECourseStatus;
+}[] = [
+  {
+    title: "Đã duyệt",
+    value: ECourseStatus.APPROVED,
+  },
+  {
+    title: "Chờ duyệt",
+    value: ECourseStatus.PENDING,
+  },
+  {
+    title: "Từ chối",
+    value: ECourseStatus.REJECTED,
+  },
+];
+export const courseLevel: {
+  title: string;
+  value: ECourseLevel;
+}[] = [
+  {
+    title: "Dễ",
+    value: ECourseLevel.BEGINNER,
+  },
+  {
+    title: "Trung bình",
+    value: ECourseLevel.INTERMEDIATE,
+  },
+  {
+    title: "Khó",
+    value: ECourseLevel.ADVANCED,
+  },
+];
+export const courseLevelTitle: Record<ECourseLevel, string> = {
+  [ECourseLevel.BEGINNER]: "Dễ",
+  [ECourseLevel.INTERMEDIATE]: "Trung bình",
+  [ECourseLevel.ADVANCED]: "Khó",
+};
