@@ -28,6 +28,7 @@ type TCreateCourseParams = {
 type TUpdateCourseParams = {
   slug: string;
   updateData: Partial<ICourse>;
+  path?: string;
 };
 
 export type {

@@ -68,6 +68,9 @@ importers:
       svix:
         specifier: ^1.37.0
         version: 1.37.0
+      sweetalert2:
+        specifier: ^11.14.3
+        version: 11.14.3
       tailwind-merge:
         specifier: ^2.5.3
         version: 2.5.3
@@ -2251,6 +2254,9 @@ packages:
 
   svix@1.37.0:
     resolution: {integrity: sha512-zXtHLEN54ajW/qLreLLWbAyjHQVrpUnULIZY7WgneBVS/LdWVc3xR5vqLKzGVA4XWl/B9GXrs4+OL8EoFNWfIQ==}
+
+  sweetalert2@11.14.3:
+    resolution: {integrity: sha512-6NuBHWJCv2gtw4y8PUXLB41hty+V6U2mKZMAvydL1IRPcORR0yuyq3cjFD/+ByrCk3muEFggbZX/x6HwmbVfbA==}
 
   swr@2.2.5:
     resolution: {integrity: sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==}
@@ -4801,6 +4807,8 @@ snapshots:
       url-parse: 1.5.10
     transitivePeerDependencies:
       - encoding
+
+  sweetalert2@11.14.3: {}
 
   swr@2.2.5(react@18.3.1):
     dependencies:
