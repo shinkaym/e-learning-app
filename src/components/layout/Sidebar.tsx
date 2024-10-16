@@ -8,15 +8,19 @@ import { useAuth, UserButton } from '@clerk/nextjs';
 import { ModeToggle } from '../common/ModeToggle';
 import Link from 'next/link';
 import { IconUsers } from '@/components/icons';
+import Image from 'next/image';
 
 const Sidebar = () => {
   const { userId } = useAuth();
   return (
     <div className="hidden p-5 border-r borderDarkMode bgDarkMode lg:flex flex-col fixed top-0 left-0 bottom-0 w-[300px]">
-      <a href='/' className='font-bold text-3xl inline-block mb-5'>
-        <span className='text-primary'>U</span>
-        cademy
-      </a>
+      <Link
+        href="/"
+        className="font-bold text-3xl inline-flex items-baseline gap-0.5 mb-5 h-10 self-start"
+      >
+        <Image alt="Ucademy" src="/logo.png" width={20} height={20} />
+        <span className="text-primary">cademy</span>
+      </Link>
       <ul className='flex flex-col gap-2'>
         {menuItems.map((item, index) => (
           <MenuItem key={index} url={item.url} title={item.title} icon={item.icon} />
@@ -39,12 +43,12 @@ const Sidebar = () => {
   );
 };
 
-function MenuItem({ url, title, icon }: TMenuItem) {
+export function MenuItem({ url = "/", title = "", icon, onlyIcon }: TMenuItem) {
   return (
     <li>
       <ActiveLink url={url}>
         {icon}
-        {title}
+        {onlyIcon ? null : title}
       </ActiveLink>
     </li>
   );
