@@ -1,18 +1,18 @@
 import { ICourse } from '@/database/course.model';
 
-type TActiveLinkProps = {
+export type TActiveLinkProps = {
   url: string;
   children: React.ReactNode;
 }
 
-type TMenuItem = {
+export type TMenuItem = {
   url: string
   title: string
   icon: React.ReactNode
   onlyIcon?: boolean
 }
 
-type TCreateUserParams = {
+export type TCreateUserParams = {
   clerkId: string;
   username: string;
   email: string;
@@ -20,18 +20,37 @@ type TCreateUserParams = {
   avatar?: string;
 };
 
-type TCreateCourseParams = {
+export type TCreateCourseParams = {
   title: string;
   slug: string;
   author: string;
 };
 
-type TUpdateCourseParams = {
+export type TUpdateCourseParams = {
   slug: string;
   updateData: Partial<ICourse>;
   path?: string;
 };
 
-export type {
-  TActiveLinkProps, TMenuItem, TCreateUserParams, TCreateCourseParams, TUpdateCourseParams
-}
+export interface TCourseUpdateParams extends Omit<ICourse, "lectures"> {
+  _id: string;
+  slug: string;
+  lectures: ILecture[];
+};
+
+// Lecture
+export type TCreateLectureParams = {
+  course: string;
+  title?: string;
+  order?: number;
+  path?: string;
+};
+export type TUpdateLectureParams = {
+  lectureId: string;
+  updateData: {
+    title?: string;
+    order?: number;
+    _destroy?: boolean;
+    path?: string;
+  };
+};
