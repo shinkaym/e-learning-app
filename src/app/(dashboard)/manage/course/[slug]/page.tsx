@@ -3,8 +3,8 @@ import { IconPlay, IconStudy, IconUsers } from '@/components/icons';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { courseLevelTitle } from '@/constants';
-import { ILecture } from '@/database/lecture.model';
 import { getCourseBySlug } from '@/lib/actions/course.action';
+import { TUpdateCourseLecture } from '@/types';
 import { ECourseStatus } from '@/types/enums';
 import Image from 'next/image';
 import React from 'react';
@@ -56,7 +56,7 @@ const page = async ({
         </BoxSection>
         <BoxSection title='Nội dung khóa học'>
           <div className='flex flex-col gap-5'>
-            {lectures.map((lecture: ILecture) => (
+          {lectures.map((lecture: TUpdateCourseLecture) => (
               <Accordion type='single' collapsible className='w-full' key={lecture._id}>
                 <AccordionItem value={lecture._id}>
                   <AccordionTrigger>

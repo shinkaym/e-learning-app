@@ -32,10 +32,16 @@ export type TUpdateCourseParams = {
   path?: string;
 };
 
+export type TUpdateCourseLecture = {
+  _id: string;
+  title: string;
+  lessons: ILesson[];
+};
+
 export interface TCourseUpdateParams extends Omit<ICourse, "lectures"> {
   _id: string;
   slug: string;
-  lectures: ILecture[];
+  lectures: TUpdateCourseLecture[];
 };
 
 // Lecture
@@ -54,3 +60,26 @@ export type TUpdateLectureParams = {
     path?: string;
   };
 };
+
+// Lesson
+export type TCreateLessonParams = {
+  lecture: string;
+  course: string;
+  title?: string;
+  order?: number;
+  path?: string;
+  slug?: string;
+};
+
+export type TUpdateLessonParams = {
+  lessonId: string;
+  updateData: {
+    title?: string;
+    slug?: string;
+    duration?: number;
+    video_url?: string;
+    content?: string;
+  };
+  path?: string;
+};
+

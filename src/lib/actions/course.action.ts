@@ -5,6 +5,7 @@ import { TCourseUpdateParams, TCreateCourseParams, TUpdateCourseParams } from '@
 import { connectToDatabase } from '../mongoose';
 import { revalidatePath } from 'next/cache';
 import Lecture from '@/database/lecture.model';
+import Lesson from '@/database/lesson.model';
 
 export async function getAllCourses(): Promise<ICourse[] | undefined> {
   try {
@@ -25,6 +26,13 @@ export async function getCourseBySlug({ slug }: { slug: string }): Promise<TCour
       select: "_id title",
       match: {
         _destroy: false,
+      },
+      populate: {
+        path: "lessons",
+        model: Lesson,
+        match: {
+          _destroy: false,
+        },
       },
     });
     return findCourse;
