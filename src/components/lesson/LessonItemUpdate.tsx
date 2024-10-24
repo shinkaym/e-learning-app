@@ -17,6 +17,10 @@ import { updateLesson } from "@/lib/actions/lession.action";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { Button } from "../ui/button";
+import { useRef } from 'react';
+import { useTheme } from 'next-themes';
+import { Editor } from "@tinymce/tinymce-react";
+import { editorOptions } from '@/constants';
 const formSchema = z.object({
   slug: z.string().optional(),
   duration: z.number().optional(),
@@ -24,6 +28,8 @@ const formSchema = z.object({
   content: z.string().optional(),
 });
 const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const editorRef = useRef<any>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,6 +53,7 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
     } finally {
     }
   }
+  const { theme } = useTheme();
   return (
     <div>
       <Form {...form}>
@@ -56,10 +63,19 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
               control={form.control}
               name="slug"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="col-start-1 col-end-3">
                   <FormLabel>Đường dẫn</FormLabel>
                   <FormControl>
-                    <Input placeholder="bai-1-tong-quan" {...field} />
+                    <Editor
+                      apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                      onInit={(_evt, editor) => {
+                        (editorRef.current = editor).setContent(
+                          lesson.content || ""
+                        );
+                      }}
+                      value={field.value}
+                      {...editorOptions(field, theme)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +127,7 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
               )}
             />
           </div>
-          <div className="flex justify-end gap-5 items-center">
+          <div className="flex justify-end gap-5 items-center mt-8">
             <Button type="submit">Cập nhật</Button>
             <Link href="/" className="text-sm text-slate-600">
               Xem trước
