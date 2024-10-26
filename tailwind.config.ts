@@ -12,6 +12,9 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+			screens: {
+        "3xl": "2000px",
+      },
   		colors: {
   			primary: '#615efc',
   			grayDarkest: '#131316',
