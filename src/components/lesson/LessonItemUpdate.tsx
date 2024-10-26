@@ -1,25 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-import { Form } from "@/components/ui/form";
-import { ILesson } from "@/database/lesson.model";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { updateLesson } from "@/lib/actions/lession.action";
-import Link from "next/link";
-import { toast } from "react-toastify";
-import { Button } from "../ui/button";
+'use client';
+import { Form } from '@/components/ui/form';
+import { ILesson } from '@/database/lesson.model';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { updateLesson } from '@/lib/actions/lession.action';
+import Link from 'next/link';
+import { toast } from 'react-toastify';
+import { Button } from '../ui/button';
 import { useRef } from 'react';
 import { useTheme } from 'next-themes';
-import { Editor } from "@tinymce/tinymce-react";
+import { Editor } from '@tinymce/tinymce-react';
 import { editorOptions } from '@/constants';
 const formSchema = z.object({
   slug: z.string().optional(),
@@ -46,7 +40,7 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
         updateData: values,
       });
       if (res?.success) {
-        toast.success("Cập nhật bài học thành công");
+        toast.success('Cập nhật bài học thành công');
       }
     } catch (error) {
       console.log(error);
@@ -58,24 +52,15 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-2 gap-8">
+          <div className='grid grid-cols-2 gap-8'>
             <FormField
               control={form.control}
-              name="slug"
+              name='slug'
               render={({ field }) => (
-                <FormItem className="col-start-1 col-end-3">
+                <FormItem>
                   <FormLabel>Đường dẫn</FormLabel>
                   <FormControl>
-                    <Editor
-                      apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
-                      onInit={(_evt, editor) => {
-                        (editorRef.current = editor).setContent(
-                          lesson.content || ""
-                        );
-                      }}
-                      value={field.value}
-                      {...editorOptions(field, theme)}
-                    />
+                    <Input placeholder='bai-1-tong-quan' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,13 +68,13 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
             />
             <FormField
               control={form.control}
-              name="duration"
+              name='duration'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Thời lượng</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="bai-1-tong-quan"
+                      placeholder='bai-1-tong-quan'
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -100,15 +85,12 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
             />
             <FormField
               control={form.control}
-              name="video_url"
+              name='video_url'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Video URL</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="https://youtube.com/abcdefXZ"
-                      {...field}
-                    />
+                    <Input placeholder='https://youtube.com/abcdefXZ' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,19 +99,28 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
             <div></div>
             <FormField
               control={form.control}
-              name="content"
+              name='content'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='col-start-1 col-end-3'>
                   <FormLabel>Nội dung</FormLabel>
-                  <FormControl></FormControl>
+                  <FormControl>
+                    <Editor
+                      apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                      onInit={(_evt, editor) => {
+                        (editorRef.current = editor).setContent(lesson.content || '');
+                      }}
+                      value={field.value}
+                      {...editorOptions(field, theme)}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="flex justify-end gap-5 items-center mt-8">
-            <Button type="submit">Cập nhật</Button>
-            <Link href="/" className="text-sm text-slate-600">
+          <div className='flex justify-end gap-5 items-center mt-8'>
+            <Button type='submit'>Cập nhật</Button>
+            <Link href='/' className='text-sm text-slate-600'>
               Xem trước
             </Link>
           </div>
