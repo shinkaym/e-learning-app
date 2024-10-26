@@ -1,36 +1,63 @@
-import Link from "next/link";
-import { IconPlay } from "../icons";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
+
+import Link from 'next/link';
+import { IconPlay } from '../icons';
 import { cn } from '@/lib/utils';
+import { createHistory } from '@/lib/actions/history.action';
+import { Checkbox } from '../ui/checkbox';
 const LessonItem = ({
   lesson,
   url,
-  isActive,
+  isActive = false,
+  isChecked = false,
 }: {
   lesson: {
     title: string;
     duration: number;
+    course: string;
+    _id: string;
   };
   url?: string;
   isActive?: boolean;
+  isChecked?: boolean;
 }) => {
+  const handleCompleteLesson = async (checked: boolean | string) => {
+    try {
+      await createHistory({
+        course: lesson.course,
+        lesson: lesson._id,
+        checked,
+        path: url || '/',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className={cn(
-        "flex items-center gap-2 bgDarkMode border borderDarkMode rounded-lg p-4 font-medium text-sm",
-        isActive ? "text-primary font-semibold pointer-events-none" : ""
+        'flex items-center gap-2 bgDarkMode border borderDarkMode rounded-lg p-4 font-medium text-sm',
+        isActive ? 'text-primary font-semibold' : ''
       )}
     >
-      <IconPlay className="size-5 flex-shrink-0" />
+      {url && (
+        <Checkbox
+          defaultChecked={isChecked}
+          className='flex-shrink-0'
+          onCheckedChange={(checked) => handleCompleteLesson(checked)}
+        />
+      )}
+      <IconPlay className='size-5 flex-shrink-0' />
       {url ? (
-        <Link href={url} className="line-clamp-1">
+        <Link href={url} className={cn('line-clamp-1', isActive && 'pointer-events-none')}>
           {lesson.title}
         </Link>
       ) : (
-        <h4 className="line-clamp-1">{lesson.title}</h4>
+        <h4 className='line-clamp-1'>{lesson.title}</h4>
       )}
-      <span className="ml-auto text-xs font-semibold flex-shrink-0">
-        {lesson.duration} phút
-      </span>
+      <span className='ml-auto text-xs font-semibold flex-shrink-0'>{lesson.duration} phút</span>
     </div>
   );
 };
