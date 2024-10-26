@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getCourseBySlug } from "@/lib/actions/course.action";
 import { findAllLessons, getLessonBySlug } from "@/lib/actions/lession.action";
 import LessonNavigation from './LessonNavigation';
 import Heading from '@/components/typography/Heading';
 import LessonContent from '@/components/lesson/LessonContent';
 import { getHistory } from '@/lib/actions/history.action';
+import PageNotFound from '@/app/not-found';
+import { auth } from '@clerk/nextjs/server';
+import { getUserInfo } from '@/lib/actions/user.action';
 
 const page = async ({
   params,
@@ -16,11 +20,16 @@ const page = async ({
     slug: string;
   };
 }) => {
+  const { userId } = auth();
+  if (!userId) return <PageNotFound />;
+  const findUser = await getUserInfo({ userId });
+  if (!findUser) return <PageNotFound />;
   const course = params.course;
   const slug = searchParams.slug;
   const findCourse = await getCourseBySlug({ slug: course });
   if (!findCourse) return null;
   const courseId = findCourse?._id.toString();
+  if (!findUser.courses.includes(courseId as any)) return <PageNotFound />;
   const lessonDetails = await getLessonBySlug({
     slug,
     course: courseId || "",
