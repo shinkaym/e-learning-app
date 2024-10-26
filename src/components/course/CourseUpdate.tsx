@@ -176,7 +176,7 @@ const CourseUpdate = ({ data }: { data: ICourse }) => {
               <FormItem>
                 <FormLabel>Mô tả khóa học</FormLabel>
                 <FormControl>
-                  <Textarea placeholder='Nhập mô tả...' {...field} className='h-[200px]' />
+                  <Textarea placeholder='Nhập mô tả...' {...field} className="h-[250px]" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -189,7 +189,7 @@ const CourseUpdate = ({ data }: { data: ICourse }) => {
               <FormItem>
                 <FormLabel>Ảnh đại diện</FormLabel>
                 <>
-                    <div className="h-[200px] bg-white rounded-md border border-gray-200 flex items-center justify-center relative">
+                <div className="h-[250px] bg-white rounded-md border border-gray-200 flex items-center justify-center relative">
                       {!imageWatch ? (
                         <UploadButton
                           endpoint="imageUploader"
@@ -206,7 +206,7 @@ const CourseUpdate = ({ data }: { data: ICourse }) => {
                           alt=""
                           src={imageWatch}
                           fill
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-md"
                         />
                       )}
                     </div>

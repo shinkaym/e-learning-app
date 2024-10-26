@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getCourseBySlug } from "@/lib/actions/course.action";
-import { findAllLessons, getLessonBySlug } from "@/lib/actions/lession.action";
+import { getCourseBySlug } from '@/lib/actions/course.action';
+import { findAllLessons, getLessonBySlug } from '@/lib/actions/lession.action';
 import LessonNavigation from './LessonNavigation';
 import Heading from '@/components/typography/Heading';
 import LessonContent from '@/components/lesson/LessonContent';
@@ -8,6 +8,7 @@ import { getHistory } from '@/lib/actions/history.action';
 import PageNotFound from '@/app/not-found';
 import { auth } from '@clerk/nextjs/server';
 import { getUserInfo } from '@/lib/actions/user.action';
+import LessonSaveUrl from './LessonSaveUrl';
 
 const page = async ({
   params,
@@ -32,50 +33,40 @@ const page = async ({
   if (!findUser.courses.includes(courseId as any)) return <PageNotFound />;
   const lessonDetails = await getLessonBySlug({
     slug,
-    course: courseId || "",
+    course: courseId || '',
   });
-  const lessonList = await findAllLessons({ course: courseId || "" });
+  const lessonList = await findAllLessons({ course: courseId || '' });
   if (!lessonDetails) return null;
-  const currentLessonIndex =
-    lessonList?.findIndex((el) => el.slug === lessonDetails.slug) || 0;
+  const currentLessonIndex = lessonList?.findIndex((el) => el.slug === lessonDetails.slug) || 0;
   const nextLesson = lessonList?.[currentLessonIndex + 1];
   const prevLesson = lessonList?.[currentLessonIndex - 1];
-  const videoId = lessonDetails.video_url?.split("v=").at(-1);
+  const videoId = lessonDetails.video_url?.split('v=').at(-1);
   const lectures = findCourse.lectures || [];
   const histories = await getHistory({ course: courseId });
-  const completePercentage =
-    ((histories?.length || 0) / (lessonList?.length || 1)) * 100;
+  const completePercentage = ((histories?.length || 0) / (lessonList?.length || 1)) * 100;
   return (
-    <div className="block xl:grid xl:grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-10 min-h-screen items-start">
+    <div className='block xl:grid xl:grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-10 min-h-screen items-start'>
+      <LessonSaveUrl course={course} url={`/${course}/lesson?slug=${slug}`}></LessonSaveUrl>
       <div>
-        <div className="relative mb-5 aspect-video">
-          <iframe
-            className="w-full h-full object-fill"
-            src={`https://www.youtube.com/embed/${videoId}`}
-          ></iframe>
+        <div className='relative mb-5 aspect-video'>
+          <iframe className='w-full h-full object-fill' src={`https://www.youtube.com/embed/${videoId}`}></iframe>
         </div>
-        <div className="flex items-center justify-between mb-5">
-        <LessonNavigation
-            nextLesson={
-              !nextLesson ? "" : `/${course}/lesson?slug=${nextLesson?.slug}`
-            }
-            prevLesson={
-              !prevLesson ? "" : `/${course}/lesson?slug=${prevLesson?.slug}`
-            }
+        <div className='flex items-center justify-between mb-5'>
+          <LessonNavigation
+            nextLesson={!nextLesson ? '' : `/${course}/lesson?slug=${nextLesson?.slug}`}
+            prevLesson={!prevLesson ? '' : `/${course}/lesson?slug=${prevLesson?.slug}`}
           ></LessonNavigation>
           <div></div>
         </div>
-        <Heading className="mb-10">{lessonDetails.title}</Heading>
-        <div className="p-5 rounded-lg bgDarkMode border borderDarkMode entry-content">
-          <div
-            dangerouslySetInnerHTML={{ __html: lessonDetails.content || "" }}
-          ></div>
+        <Heading className='mb-10'>{lessonDetails.title}</Heading>
+        <div className='p-5 rounded-lg bgDarkMode border borderDarkMode entry-content'>
+          <div dangerouslySetInnerHTML={{ __html: lessonDetails.content || '' }}></div>
         </div>
       </div>
-      <div className="sticky top-5 right-0 max-h-[calc(100svh-100px)] overflow-y-auto">
-        <div className="h-3 w-full rounded-full border borderDarkMode bgDarkMode mb-2">
-        <div
-            className="h-full rounded-full bg-secondary w-0 transition-all duration-300"
+      <div className='sticky top-5 right-0 max-h-[calc(100svh-100px)] overflow-y-auto'>
+        <div className='h-3 w-full rounded-full border borderDarkMode bgDarkMode mb-2'>
+          <div
+            className='h-full rounded-full bg-gradient-to-r from-primary to-secondary w-0 transition-all duration-300'
             style={{
               width: `${completePercentage}%`,
             }}

@@ -1,20 +1,19 @@
-import { CourseGrid } from '@/components/common'
-// import CourseItem from '@/components/course/CourseItem'
-import Heading from '@/components/typography/Heading'
-import React from 'react'
+import Heading from '@/components/typography/Heading';
+import { getUserCourses } from '@/lib/actions/user.action';
+import React from 'react';
+import StudyCourses from './StudyCourses';
 
-const page = () => {
+const page = async () => {
+  const courses = await getUserCourses();
+
   return (
-    <>
+  <>
       <Heading>Khu vực học tập</Heading>
-      <CourseGrid>
-        hihi
-        {/* <CourseItem></CourseItem> */}
-        {/* <CourseItem></CourseItem> */}
-        {/* <CourseItem></CourseItem> */}
-      </CourseGrid>
+      <StudyCourses
+        courses={courses ? JSON.parse(JSON.stringify(courses)) : []}
+      ></StudyCourses>
     </>
-  )
-}
+  );
+};
 
-export default page
+export default page;
