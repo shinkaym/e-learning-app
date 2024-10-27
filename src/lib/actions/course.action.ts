@@ -1,16 +1,31 @@
 'use server';
 
 import Course, { ICourse } from '@/database/course.model';
-import { TCourseUpdateParams, TCreateCourseParams, TUpdateCourseParams } from '@/types';
+import { TCourseUpdateParams, TCreateCourseParams, TGetAllCourseParams, TUpdateCourseParams } from '@/types';
 import { connectToDatabase } from '../mongoose';
 import { revalidatePath } from 'next/cache';
 import Lecture from '@/database/lecture.model';
 import Lesson from '@/database/lesson.model';
+import { FilterQuery } from 'mongoose';
 
-export async function getAllCourses(): Promise<ICourse[] | undefined> {
+export async function getAllCourses(
+  params: TGetAllCourseParams
+): Promise<ICourse[] | undefined> {
   try {
     connectToDatabase();
-    const courses = await Course.find();
+    const { page = 1, limit = 10, search, status } = params;
+    const skip = (page - 1) * limit;
+    const query: FilterQuery<typeof Course> = {};
+    if (search) {
+      query.$or = [{ title: { $regex: search, $options: "i" } }];
+    }
+    if (status) {
+      query.status = status;
+    }
+    const courses = await Course.find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({ created_at: -1 });
     return courses;
   } catch (error) {
     console.log(error);

@@ -43,7 +43,12 @@ export interface TCourseUpdateParams extends Omit<ICourse, "lectures"> {
   slug: string;
   lectures: TUpdateCourseLecture[];
 };
-
+export type TGetAllCourseParams = {
+  page: number;
+  limit: number;
+  search?: string;
+  status?: string;
+};
 // Lecture
 export type TCreateLectureParams = {
   course: string;
