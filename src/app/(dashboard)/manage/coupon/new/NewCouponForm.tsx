@@ -1,66 +1,60 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { CalendarIcon } from "@radix-ui/react-icons";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { useState } from 'react';
+import { ECouponType } from '@/types/enums';
+import { couponTypes } from '@/constants';
 const formSchema = z.object({
-  title: z.string(),
-  code: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
-  status: z.boolean(),
-  value: z.string(),
-  type: z.string(),
-  courses: z.array(z.string()),
-  limit: z.string(),
+  title: z.string({
+    message: 'Tiêu đề không được để trống',
+  }),
+  code: z
+    .string({
+      message: 'Mã giảm giá không được để trống',
+    })
+    .min(3, 'Mã giảm giá phải có ít nhất 3 ký tự')
+    .max(10, 'Mã giảm giá không được quá 10 ký tự'),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  active: z.boolean().optional(),
+  value: z.number().optional(),
+  type: z.string().optional(),
+  courses: z.array(z.string()).optional(),
+  limit: z.number().optional(),
 });
 const NewCouponForm = () => {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-    },
+    defaultValues: {},
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {}
+  const couponTypeWatch = form.watch('type');
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-        <div className="grid grid-cols-2 gap-8 mt-10 mb-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} autoComplete='off'>
+        <div className='grid grid-cols-2 gap-8 mt-10 mb-8'>
           <FormField
             control={form.control}
-            name="title"
+            name='title'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tiêu đề</FormLabel>
                 <FormControl>
-                  <Input placeholder="Tiêu đề" {...field} />
+                  <Input placeholder='Tiêu đề' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -68,12 +62,16 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="title"
+            name='code'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="Mã giảm giá" {...field} />
+                  <Input
+                    placeholder='Mã giảm giá'
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,20 +79,20 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="startDate"
+            name='startDate'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Ngày bắt đầu</FormLabel>
                 <FormControl>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant={"outline"} className="w-full">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                      <Button variant={'outline'} className='w-full'>
+                        <CalendarIcon className='mr-2 h-4 w-4' />
                         <span>Pick a date</span>
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar mode="single" initialFocus />
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar mode='single' initialFocus selected={startDate} onSelect={setStartDate} />
                     </PopoverContent>
                   </Popover>
                 </FormControl>
@@ -104,20 +102,20 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="endDate"
+            name='endDate'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Ngày kết thúc</FormLabel>
                 <FormControl>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant={"outline"} className="w-full">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                      <Button variant={'outline'} className='w-full'>
+                        <CalendarIcon className='mr-2 h-4 w-4' />
                         <span>Pick a date</span>
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar mode="single" initialFocus />
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <Calendar mode='single' initialFocus selected={endDate} onSelect={setEndDate} />
                     </PopoverContent>
                   </Popover>
                 </FormControl>
@@ -127,20 +125,18 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="type"
+            name='type'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Loại coupon</FormLabel>
                 <FormControl>
-                  <RadioGroup defaultValue="percentage" className="flex gap-5">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="percentage" id="percentage" />
-                      <Label htmlFor="percentage">Phần trăm</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="money" id="money" />
-                      <Label htmlFor="money">Giá tiền</Label>
-                    </div>
+                  <RadioGroup defaultValue={ECouponType.PERCENT} className='flex gap-5' onValueChange={field.onChange}>
+                    {couponTypes.map((type) => (
+                      <div className='flex items-center space-x-2' key={type.value}>
+                        <RadioGroupItem value={type.value} id={type.value} />
+                        <Label htmlFor={type.value}>{type.title}</Label>
+                      </div>
+                    ))}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -149,12 +145,17 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="value"
+            name='value'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Giá trị</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input
+                    type='number'
+                    placeholder='50%'
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -162,16 +163,13 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="status"
+            name='active'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Trạng thái</FormLabel>
                 <FormControl>
                   <div>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -180,12 +178,17 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="limit"
+            name='limit'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Số lượng tối đa</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input
+                    type='number'
+                    placeholder='100'
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -193,26 +196,19 @@ const NewCouponForm = () => {
           />
           <FormField
             control={form.control}
-            name="courses"
+            name='courses'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Khóa học</FormLabel>
                 <FormControl>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Chọn khóa học" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup></SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Input placeholder='Tìm kiếm khóa học...' />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button variant="primary" className="w-[150px] ml-auto flex">
+        <Button variant='primary' className='w-[150px] ml-auto flex'>
           Tạo mã
         </Button>
       </form>
