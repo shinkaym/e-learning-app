@@ -56,7 +56,7 @@ const CourseItem = ({
           {courseInfo.map((item, index) => (
             <div className="flex items-center gap-2" key={index}>
               {item.icon("size-4")}
-              <span>{item.title}</span>
+              <span>{item.title.toString()}</span>
             </div>
           ))}
 
