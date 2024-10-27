@@ -19,6 +19,7 @@ const page = async ({
   const data = await getCourseBySlug({
     slug: params.slug,
   });
+  console.log('🚀 ~ data:', data)
   if (!data) return null;
   if (data.status !== ECourseStatus.APPROVED) return <PageNotFound />;
   const videoId = data.intro_url?.split('v=')[1];
