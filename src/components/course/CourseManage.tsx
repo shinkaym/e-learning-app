@@ -18,21 +18,13 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { StatusBadge } from '../common';
+import useQueryString from '@/hooks/useQueryString';
 
 const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  // Get a new searchParams string by merging the current
-  // searchParams with a provided key/value pair
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams]
-  );
+  const { createQueryString } = useQueryString();
   const handleDeleteCourse = (slug: string) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -182,13 +174,12 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     <span className='font-bold text-sm lg:text-base'>{course.price.toLocaleString()}đ</span>
                   </TableCell>
                   <TableCell>
-                    <button
-                      type='button'
-                      className={cn(commonClassNames.status, courseStatusItem?.className)}
-                      onClick={() => handleChangeStatus(course.slug, course.status)}
-                    >
-                      {courseStatusItem?.title}
-                    </button>
+                  <StatusBadge
+                      item={courseStatusItem}
+                      onClick={() =>
+                        handleChangeStatus(course.slug, course.status)
+                      }
+                    ></StatusBadge>
                   </TableCell>
                   <TableCell>
                     <div className='flex gap-3'>
