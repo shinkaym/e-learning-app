@@ -26,4 +26,16 @@ enum ELessonType {
   TEXT = 'TEXT',
 }
 
-export { EUserStatus, EUserRole, ECourseStatus, ECourseLevel, ELessonType };
+enum EOrderStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  CANCELED = "CANCELED",
+}
+export {
+  ECourseLevel,
+  ECourseStatus,
+  ELessonType,
+  EOrderStatus,
+  EUserRole,
+  EUserStatus,
+};
