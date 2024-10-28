@@ -8,7 +8,6 @@ import { useAuth, UserButton } from '@clerk/nextjs';
 import { ModeToggle } from '../common/ModeToggle';
 import Link from 'next/link';
 import { IconUsers } from '@/components/icons';
-import Image from 'next/image';
 
 const Sidebar = () => {
   const { userId } = useAuth();
@@ -16,10 +15,9 @@ const Sidebar = () => {
     <div className="hidden p-5 border-r borderDarkMode bgDarkMode lg:flex flex-col fixed top-0 left-0 bottom-0 w-[300px]">
       <Link
         href="/"
-        className="font-bold text-3xl inline-flex items-baseline gap-0.5 mb-5 h-10 self-start"
+        className="font-bold text-3xl inline-flex items-baseline gap-0.5 mb-5 h-10 self-start pl-3"
       >
-        <Image alt="Ucademy" src="/logo.png" width={20} height={20} />
-        <span className="text-primary">cademy</span>
+        <span>Ucademy</span>
       </Link>
       <ul className='flex flex-col gap-2'>
         {menuItems.map((item, index) => (
