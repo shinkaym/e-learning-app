@@ -18,7 +18,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { BouncedLink, StatusBadge } from '../common';
+import { BouncedLink, StatusBadge, TableAction, TableActionItem } from '../common';
 import useQueryString from '@/hooks/useQueryString';
 
 const CourseManage = ({ courses }: { courses: ICourse[] }) => {
@@ -51,31 +51,23 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   const handleChangeStatus = async (slug: string, status: ECourseStatus) => {
     try {
       Swal.fire({
-        title: "Bạn có chắc muốn đổi trạng thái không?",
+        title: 'Bạn có chắc muốn đổi trạng thái không?',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: "Cập nhật",
-        cancelButtonText: "Hủy",
+        confirmButtonText: 'Cập nhật',
+        cancelButtonText: 'Hủy',
       }).then(async (result) => {
         if (result.isConfirmed) {
           await updateCourse({
             slug,
             updateData: {
-              status:
-                status === ECourseStatus.PENDING
-                  ? ECourseStatus.APPROVED
-                  : ECourseStatus.PENDING,
+              status: status === ECourseStatus.PENDING ? ECourseStatus.APPROVED : ECourseStatus.PENDING,
               _destroy: false,
             },
             path: '/manage/course',
           });
           toast.success('Cập nhật trạng thái thành công!');
-          router.push(
-            `${pathname}?${createQueryString("status", "")}&${createQueryString(
-              "search",
-              ""
-            )}`
-          );
+          router.push(`${pathname}?${createQueryString('status', '')}&${createQueryString('search', '')}`);
         }
       });
     } catch (error) {
@@ -101,7 +93,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
 
   return (
     <>
-      <BouncedLink url="/manage/course/new"></BouncedLink>
+      <BouncedLink url='/manage/course/new'></BouncedLink>
       <div className='flex flex-col lg:flex-row lg:items-center gap-5 justify-between mb-10'>
         <Heading className=''>Quản lý khóa học</Heading>
         <div className='flex gap-3'>
@@ -160,31 +152,21 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     <span className='font-bold text-sm lg:text-base'>{course.price.toLocaleString()}đ</span>
                   </TableCell>
                   <TableCell>
-                  <StatusBadge
+                    <StatusBadge
                       item={courseStatusItem}
-                      onClick={() =>
-                        handleChangeStatus(course.slug, course.status)
-                      }
+                      onClick={() => handleChangeStatus(course.slug, course.status)}
                     ></StatusBadge>
                   </TableCell>
                   <TableCell>
-                    <div className='flex gap-3'>
-                      <Link
-                        href={`/manage/course/update-content?slug=${course.slug}`}
-                        className={commonClassNames.action}
-                      >
-                        <IconStudy />
-                      </Link>
-                      <Link href={`/course/${course.slug}`} target='_blank' className={commonClassNames.action}>
-                        <IconEye />
-                      </Link>
-                      <Link href={`/manage/course/update?slug=${course.slug}`} className={commonClassNames.action}>
-                        <IconEdit />
-                      </Link>
-                      <button onClick={() => handleDeleteCourse(course.slug)} className={commonClassNames.action}>
-                        <IconDelete />
-                      </button>
-                    </div>
+                    <TableAction>
+                      <TableActionItem
+                        type='study'
+                        url={`/manage/course/update-content?slug=${course.slug}`}
+                      ></TableActionItem>
+                      <TableActionItem type='view' url={`/course/${course.slug}`}></TableActionItem>
+                      <TableActionItem type='edit' url={`/manage/course/update?slug=${course.slug}`}></TableActionItem>
+                      <TableActionItem type='delete' onClick={() => handleDeleteCourse(course.slug)}></TableActionItem>
+                    </TableAction>
                   </TableCell>
                 </TableRow>
               );

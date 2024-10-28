@@ -1,16 +1,18 @@
-import { BouncedLink } from "@/components/common";
-import { IconLeftArrow, IconRightArrow } from "@/components/icons";
+import { BouncedLink, PaginationBtn, StatusBadge, TableAction, TableActionItem } from "@/components/common";
 import Heading from '@/components/typography/Heading';
 import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { commonClassNames } from "@/constants";
-const page = () => {
+import { getCoupons } from '@/lib/actions/coupon.action';
+import { ECouponType } from '@/types/enums';
+const page = async () => {
+  const coupons = await getCoupons({});
   return (
     <div>
       <BouncedLink url="/manage/coupon/new"></BouncedLink>
@@ -33,16 +35,58 @@ const page = () => {
             <TableHead>Hành động</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody></TableBody>
+        <TableBody>
+          {coupons &&
+            coupons.length > 0 &&
+            coupons.map((coupon) => (
+              <TableRow key={coupon.code}>
+                <TableCell>
+                  <strong>{coupon.code}</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>{coupon.title}</strong>
+                </TableCell>
+                <TableCell>
+                  {coupon.type === ECouponType.AMOUNT ? (
+                    <>{coupon.value.toLocaleString("us-US")}</>
+                  ) : (
+                    <>{coupon.value}%</>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {coupon.used} / {coupon.limit}
+                </TableCell>
+                <TableCell>
+                  {coupon.active ? (
+                    <StatusBadge
+                      item={{
+                        title: "Đang hoạt động",
+                        className: "text-green-500",
+                      }}
+                    ></StatusBadge>
+                  ) : (
+                    <StatusBadge
+                      item={{
+                        title: "Chưa kích hoạt",
+                        className: "text-orange-500",
+                      }}
+                    ></StatusBadge>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <TableAction>
+                    <TableActionItem
+                      type="edit"
+                      url={`/manage/coupon/update?code=${coupon.code}`}
+                    ></TableActionItem>
+                    <TableActionItem type="delete"></TableActionItem>
+                  </TableAction>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
       </Table>
-      <div className="flex justify-end gap-3 mt-5">
-        <button className={commonClassNames.paginationButton}>
-          <IconLeftArrow />
-        </button>
-        <button className={commonClassNames.paginationButton}>
-          <IconRightArrow />
-        </button>
-      </div>
+      <PaginationBtn></PaginationBtn>
     </div>
   );
 };
