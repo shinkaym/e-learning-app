@@ -10,6 +10,7 @@ import Lecture from '@/database/lecture.model';
 import Lesson from '@/database/lesson.model';
 import { FilterQuery } from 'mongoose';
 import { ECourseStatus, ERatingStatus } from '@/types/enums';
+import Rating from '@/database/rating.model';
 
 export async function getAllCoursesPublic(
   params: TGetAllCourseParams
@@ -77,6 +78,7 @@ export async function getCourseBySlug({ slug }: { slug: string }): Promise<TCour
     })
     .populate({
       path: "rating",
+      model: Rating,
       match: {
         status: ERatingStatus.ACTIVE,
       },
