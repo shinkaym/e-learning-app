@@ -1,26 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { ReactNode } from 'react';
 import { IconClock, IconEye, IconStar } from '../icons';
-import { ICourse } from '@/database/course.model';
 import { ObjectId } from 'mongoose';
 import { commonClassNames } from '@/constants';
+import { StudyCoursesProps } from '@/types';
+import { getCourseLessonsInfo } from '@/lib/actions/course.action';
+import { formatMinutesToHour, formatNumberToK } from '@/utils';
 
-const CourseItem = ({
+const CourseItem = async ({
   data,
   cta,
   url = "",
 }: {
-  data: ICourse;
+  data: StudyCoursesProps;
   cta?: string;
   url?: string;
 }) => {
+  const { duration }: any =
+    (await getCourseLessonsInfo({ slug: data.slug })) || 0;
   const courseInfo: {
     title: string | number | ObjectId;
     icon: (className?: string) => ReactNode;
   }[] = [
     {
-      title: data.views,
+      title: formatNumberToK(data.views),
       icon: (className?: string) => <IconEye className={className} />,
     },
     {
@@ -28,7 +33,7 @@ const CourseItem = ({
       icon: (className?: string) => <IconStar className={className} />,
     },
     {
-      title: '25h30',
+      title: formatMinutesToHour(duration),
       icon: (className?: string) => <IconClock className={className} />,
     },
   ];

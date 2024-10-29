@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use server';
 
 import Course, { ICourse } from '@/database/course.model';
-import { TCourseUpdateParams, TCreateCourseParams, TGetAllCourseParams, TUpdateCourseParams } from '@/types';
+import { StudyCoursesProps, TCourseUpdateParams, TCreateCourseParams, TGetAllCourseParams, TUpdateCourseParams } from '@/types';
 import { connectToDatabase } from '../mongoose';
 import { revalidatePath } from 'next/cache';
 import Lecture from '@/database/lecture.model';
@@ -11,7 +13,7 @@ import { ECourseStatus } from '@/types/enums';
 
 export async function getAllCoursesPublic(
   params: TGetAllCourseParams
-): Promise<ICourse[] | undefined> {
+): Promise<StudyCoursesProps[] | undefined> {
   try {
     connectToDatabase();
     const { page = 1, limit = 10, search } = params;
@@ -114,4 +116,45 @@ export async function updateCourse(params: TUpdateCourseParams) {
   } catch (error) {
     console.log(error);
   }
+}
+export async function updateCourseView({ slug }: { slug: string }) {
+  try {
+    connectToDatabase();
+    await Course.findOneAndUpdate(
+      { slug },
+      {
+        $inc: { views: 1 },
+      }
+    );
+  } catch (error) {}
+}
+export async function getCourseLessonsInfo({ slug }: { slug: string }): Promise<
+  | {
+      duration: number;
+      lessons: number;
+    }
+  | undefined
+> {
+  try {
+    connectToDatabase();
+    const course = await Course.findOne({ slug })
+      .select("lectures")
+      .populate({
+        path: "lectures",
+        select: "lessons",
+        populate: {
+          path: "lessons",
+          select: "duration",
+        },
+      });
+    const lessons = course?.lectures.map((l: any) => l.lessons).flat();
+    const duration = lessons.reduce(
+      (acc: number, cur: any) => acc + cur.duration,
+      0
+    );
+    return {
+      duration,
+      lessons: lessons.length,
+    };
+  } catch (error) {}
 }
