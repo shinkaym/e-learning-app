@@ -36,6 +36,11 @@ enum ECouponType {
   AMOUNT = "AMOUNT",
 }
 
+enum ERatingStatus {
+  ACTIVE = "ACTIVE",
+  UNACTIVE = "UNACTIVE",
+}
+
 export {
   ECourseLevel,
   ECourseStatus,
@@ -43,5 +48,6 @@ export {
   EOrderStatus,
   EUserRole,
   EUserStatus,
-  ECouponType
+  ECouponType,
+  ERatingStatus
 };

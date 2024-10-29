@@ -5,6 +5,8 @@ import LessonNavigation from "../LessonNavigation";
 import LessonSaveUrl from "../LessonSaveUrl";
 import Heading from '@/components/typography/Heading';
 import VideoPlayer from './VideoPlayer';
+import { getUserInfo } from '@/lib/actions/user.action';
+import { auth } from '@clerk/nextjs/server';
 const page = async ({
   params,
   searchParams,
@@ -16,6 +18,8 @@ const page = async ({
     slug: string;
   };
 }) => {
+  const { userId } = auth();
+  const findUser = await getUserInfo({ userId: userId! });
   const course = params.course;
   const slug = searchParams.slug;
   const findCourse = await getCourseBySlug({ slug: course });
@@ -42,6 +46,10 @@ const page = async ({
         prevLesson={
           !prevLesson ? "" : `/${course}/lesson?slug=${prevLesson?.slug}`
         }
+        data={{
+          userId: findUser?._id.toString() || "",
+          courseId,
+        }}
       />
       <Heading className="mb-10">{lessonDetails.title}</Heading>
       <div className="p-5 rounded-lg bgDarkMode border borderDarkMode entry-content">

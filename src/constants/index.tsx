@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IconComment, IconCoupon, IconExplore, IconOrder, IconPlay, IconStudy, IconUsers } from '@/components/icons';
-import { TMenuItem } from '@/types';
+import { TMenuItem, TRatingIcon } from '@/types';
 import { ECouponType, ECourseLevel, ECourseStatus, EOrderStatus } from '@/types/enums';
 import { z } from "zod";
 
@@ -189,3 +189,29 @@ export const couponFormSchema = z.object({
   courses: z.array(z.string()).optional(),
   limit: z.number().optional(),
 });
+
+export const ratingList: {
+  title: TRatingIcon;
+  value: number;
+}[] = [
+  {
+    title: "awesome",
+    value: 5,
+  },
+  {
+    title: "good",
+    value: 4,
+  },
+  {
+    title: "meh",
+    value: 3,
+  },
+  {
+    title: "bad",
+    value: 2,
+  },
+  {
+    title: "terrible",
+    value: 1,
+  },
+];
