@@ -56,5 +56,10 @@ const userSchema = new Schema<IUser>({
   },
 });
 
+userSchema.index(
+  { email: 1 },
+  { unique: true, partialFilterExpression: { email: { $ne: null } } }
+);
+
 const User = models.User || model<IUser>("User", userSchema);
 export default User;
