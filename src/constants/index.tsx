@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IconComment, IconCoupon, IconExplore, IconOrder, IconPlay, IconStar, IconStudy, IconUsers } from '@/components/icons';
 import { TMenuItem, TRatingIcon } from '@/types';
-import { ECouponType, ECourseLevel, ECourseStatus, EOrderStatus } from '@/types/enums';
+import { ECouponType, ECourseLevel, ECourseStatus, EOrderStatus, ERatingStatus } from '@/types/enums';
 import { z } from "zod";
 
 export const menuItems: TMenuItem[] = [
@@ -218,5 +218,21 @@ export const ratingList: {
   {
     title: "terrible",
     value: 1,
+  },
+];
+export const ratingStatus: {
+  title: string;
+  value: ERatingStatus;
+  className?: string;
+}[] = [
+  {
+    title: "Đã duyệt",
+    value: ERatingStatus.ACTIVE,
+    className: "text-green-500 bg-green-500",
+  },
+  {
+    title: "Chờ duyệt",
+    value: ERatingStatus.UNACTIVE,
+    className: "text-orange-500 bg-orange-500",
   },
 ];

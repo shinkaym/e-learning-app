@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { commonClassNames } from "@/constants";
 import Link from "next/link";
-import { IconDelete, IconEdit, IconEye, IconStudy } from "../icons";
-type TableActionIcon = "edit" | "delete" | "view" | "study";
+import { IconCheck, IconDelete, IconEdit, IconEye, IconStudy } from "../icons";
+type TableActionIcon = "edit" | "delete" | "view" | "study" | "approve";
 const TableActionItem = ({
   onClick,
   type,
@@ -17,6 +17,7 @@ const TableActionItem = ({
     delete: <IconDelete />,
     view: <IconEye />,
     study: <IconStudy />,
+    approve: <IconCheck />,
   };
   if (url)
     return (
