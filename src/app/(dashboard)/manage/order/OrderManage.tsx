@@ -1,5 +1,7 @@
 "use client";
 import { StatusBadge } from "@/components/common";
+import EmptyData from '@/components/common/EmptyData';
+import Pagination from '@/components/common/Pagination';
 import { IconCancel, IconCheck } from "@/components/icons";
 import Heading from '@/components/typography/Heading';
 import { Input } from "@/components/ui/input";
@@ -43,7 +45,13 @@ interface IOrderManageProps {
     name: string;
   };
 }
-const OrderManage = ({ orders = [] }: { orders: IOrderManageProps[] }) => {
+const OrderManage = ({
+  orders = [],
+  totalPages = 1,
+}: {
+  orders: IOrderManageProps[];
+  totalPages: number;
+}) => {
   const handleUpdateOrder = async ({
     orderId,
     status,
@@ -116,6 +124,7 @@ const OrderManage = ({ orders = [] }: { orders: IOrderManageProps[] }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
+        {orders.length === 0 && <EmptyData text="Không có đơn hàng!" />}
           {orders.length > 0 &&
             orders.map((order) => {
               const orderStatusItem = orderStatus.find(
@@ -187,6 +196,7 @@ const OrderManage = ({ orders = [] }: { orders: IOrderManageProps[] }) => {
             })}
         </TableBody>
       </Table>
+      <Pagination totalPages={totalPages}></Pagination>
     </div>
   );
 };

@@ -17,3 +17,4 @@ export { default as IconRightArrow } from "./IconRightArrow";
 export { default as IconCoupon } from "./IconCoupon";
 export { default as IconPlus } from "./IconPlus";
 export { default as IconClose } from "./IconClose";
+export { default as IconDoubleLeftArrow } from "./IconDoubleLeftArrow";
