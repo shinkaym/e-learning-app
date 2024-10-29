@@ -29,7 +29,7 @@ const CourseItem = async ({
       icon: (className?: string) => <IconEye className={className} />,
     },
     {
-      title: data.rating[0],
+      title: 5,
       icon: (className?: string) => <IconStar className={className} />,
     },
     {

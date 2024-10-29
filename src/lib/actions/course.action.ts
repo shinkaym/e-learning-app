@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache';
 import Lecture from '@/database/lecture.model';
 import Lesson from '@/database/lesson.model';
 import { FilterQuery } from 'mongoose';
-import { ECourseStatus } from '@/types/enums';
+import { ECourseStatus, ERatingStatus } from '@/types/enums';
 
 export async function getAllCoursesPublic(
   params: TGetAllCourseParams
@@ -59,7 +59,8 @@ export async function getAllCourses(
 export async function getCourseBySlug({ slug }: { slug: string }): Promise<TCourseUpdateParams | undefined> {
   try {
     connectToDatabase();
-    const findCourse = await Course.findOne({ slug }).populate({
+    const findCourse = await Course.findOne({ slug })
+    .populate({
       path: "lectures",
       model: Lecture,
       select: "_id title",
@@ -72,6 +73,12 @@ export async function getCourseBySlug({ slug }: { slug: string }): Promise<TCour
         match: {
           _destroy: false,
         },
+      },
+    })
+    .populate({
+      path: "rating",
+      match: {
+        status: ERatingStatus.ACTIVE,
       },
     });
     return findCourse;

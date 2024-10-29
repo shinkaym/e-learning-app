@@ -35,6 +35,7 @@ const page = async ({
   const { duration, lessons }: any = await getCourseLessonsInfo({
     slug: data.slug,
   });
+  const ratings = data.rating.map((r: any) => r.content);
   return (
     <div className='grid lg:grid-cols-[2fr,1fr] gap-10 min-h-screen'>
       <div>
@@ -53,6 +54,16 @@ const page = async ({
           ) : (
             <Image src={data.image} alt='' fill className='w-full h-full object-cover rounded-lg' />
           )}
+        </div>
+        <div className="flex flex-wrap gap-2 mb-5">
+          {ratings.map((rating, index) => (
+            <div
+              key={index}
+              className="p-2 text-sm font-medium rounded-md border borderDarkMode bgDarkMode"
+            >
+              {rating}
+            </div>
+          ))}
         </div>
         <h1 className='font-bold text-3xl mb-5'>{data?.title}</h1>
         <BoxSection title='Mô tả'>

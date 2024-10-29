@@ -140,3 +140,10 @@ export interface StudyCoursesProps extends Omit<ICourse, "lectures"> {
 }
 
 export type TRatingIcon = "awesome" | "good" | "meh" | "bad" | "terrible";
+
+export type TCreateRatingParams = {
+  rate: number;
+  content: string;
+  user: string;
+  course: string;
+};

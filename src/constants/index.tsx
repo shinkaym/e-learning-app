@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IconComment, IconCoupon, IconExplore, IconOrder, IconPlay, IconStudy, IconUsers } from '@/components/icons';
+import { IconComment, IconCoupon, IconExplore, IconOrder, IconPlay, IconStar, IconStudy, IconUsers } from '@/components/icons';
 import { TMenuItem, TRatingIcon } from '@/types';
 import { ECouponType, ECourseLevel, ECourseStatus, EOrderStatus } from '@/types/enums';
 import { z } from "zod";
@@ -34,6 +34,11 @@ export const menuItems: TMenuItem[] = [
     url: "/manage/coupon",
     title: "Quản lý coupon",
     icon: <IconCoupon className="size-5" />,
+  },
+  {
+    url: "/manage/rating",
+    title: "Quản lý đánh giá",
+    icon: <IconStar className="size-5" />,
   },
   {
     url: '/manage/comment',
