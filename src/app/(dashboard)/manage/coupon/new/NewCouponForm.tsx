@@ -16,43 +16,24 @@ import { Switch } from '@/components/ui/switch';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { ECouponType } from '@/types/enums';
-import { couponTypes } from '@/constants';
+import { couponFormSchema, couponTypes } from '@/constants';
 import { createCoupon } from '@/lib/actions/coupon.action';
 import { toast } from 'react-toastify';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { IconClose } from '@/components/icons';
 import { debounce } from 'lodash';
 import { getAllCourses } from '@/lib/actions/course.action';
 import { Checkbox } from '@/components/ui/checkbox';
 import InputFormatCurrency from '@/components/ui/input-format';
-const formSchema = z.object({
-  title: z
-    .string({
-      message: 'Tiêu đề không được để trống',
-    })
-    .min(10, 'Tiêu đề phải có ít nhất 10 ký tự'),
-  code: z
-    .string({
-      message: 'Mã giảm giá không được để trống',
-    })
-    .min(3, 'Mã giảm giá phải có ít nhất 3 ký tự')
-    .max(10, 'Mã giảm giá không được quá 10 ký tự'),
-  start_date: z.string().optional(),
-  end_date: z.string().optional(),
-  active: z.boolean().optional(),
-  value: z.string().optional(),
-  type: z.string().optional(),
-  courses: z.array(z.string()).optional(),
-  limit: z.number().optional(),
-});
+
 const NewCouponForm = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [findCourse, setFindCourse] = useState<any[] | undefined>([]);
   const [selectedCourses, setSelectedCourses] = useState<any[]>([]);
   const [endDate, setEndDate] = useState<Date>();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof couponFormSchema>>({
+    resolver: zodResolver(couponFormSchema),
     defaultValues: {
       active: true,
       type: ECouponType.PERCENT,
@@ -66,7 +47,8 @@ const NewCouponForm = () => {
     },
   });
   const couponTypeWatch = form.watch('type');
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const router = useRouter();
+  async function onSubmit(values: z.infer<typeof couponFormSchema>) {
     try {
       const couponType = values.type;
       const couponValue = Number(values.value?.replace(/,/g, ''));
@@ -82,13 +64,13 @@ const NewCouponForm = () => {
         end_date: endDate,
         courses: selectedCourses.map((course) => course._id),
       });
+      if (newCoupon.error) {
+        toast.error(newCoupon.error);
+        return;
+      }
       if (newCoupon.code) {
         toast.success('Tạo mã giảm giá thành công');
-        form.reset();
-        setStartDate(undefined);
-        setEndDate(undefined);
-        setFindCourse([]);
-        setSelectedCourses([]);
+        router.push("/manage/coupon");
       }
     } catch (error) {
       console.log(error);
@@ -133,7 +115,7 @@ const NewCouponForm = () => {
                 <FormControl>
                   <Input
                     placeholder='Mã giảm giá'
-                    className='font-bold'
+                    className="font-bold uppercase"
                     {...field}
                     onChange={(e) => field.onChange(e.target.value.toUpperCase())}
                   />
@@ -220,10 +202,9 @@ const NewCouponForm = () => {
                   <>
                     {couponTypeWatch === ECouponType.PERCENT ? (
                       <Input
-                        type='number'
                         placeholder='100'
                         {...field}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        onChange={(e) => field.onChange(e.target.value)}
                       />
                     ) : (
                       <InputFormatCurrency {...field} onChange={(e) => field.onChange(e.target.value)} />
@@ -316,7 +297,11 @@ const NewCouponForm = () => {
             )}
           />
         </div>
-        <Button variant='primary' className='w-[150px] ml-auto flex'>
+        <Button
+          variant="primary"
+          type="submit"
+          className="w-[150px] ml-auto flex"
+        >
           Tạo mã
         </Button>
       </form>
