@@ -27,6 +27,9 @@ export default function useQueryString() {
   const handleChangePage = (page: number) => {
     createQueryString("page", `${page}`);
   };
+  const handleChangeQs = (key: string, value: string) => {
+    createQueryString(key, value);
+  };
   return {
     createQueryString,
     router,
@@ -34,6 +37,7 @@ export default function useQueryString() {
     handleSearchData,
     handleSelectStatus,
     handleChangePage,
-    currentPage
+    currentPage,
+    handleChangeQs
   };
 }

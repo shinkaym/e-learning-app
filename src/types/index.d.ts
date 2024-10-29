@@ -1,6 +1,7 @@
 import { ICourse } from '@/database/course.model';
 import { ICoupon } from "@/database/coupon.model";
 import { ILesson } from '@/database/lesson.model';
+import { ECouponType } from './enums';
 
 export type TActiveLinkProps = {
   url: string;

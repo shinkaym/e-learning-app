@@ -1,8 +1,10 @@
 "use client";
+import { ITEMS_PER_PAGE } from '@/constants';
 import useQueryString from "@/hooks/useQueryString";
 import { debounce } from "lodash";
 interface IPaginationProps {
   totalPages: number;
+  total: number;
 }
 const IconDoubleLeft = (
   <svg
@@ -66,13 +68,14 @@ const IconDoubleRight = (
     />
   </svg>
 );
-const Pagination = ({ totalPages }: IPaginationProps) => {
+const Pagination = ({ totalPages, total }: IPaginationProps) => {
   const { handleChangePage, currentPage } = useQueryString();
   const onInputChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (value < 1) return;
     handleChangePage(Number(e.target.value));
   }, 250);
+  if (total <= ITEMS_PER_PAGE) return null;
   return (
     <div className="mt-10 flex items-center justify-center gap-3">
       <PaginationButton
