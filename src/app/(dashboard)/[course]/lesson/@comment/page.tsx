@@ -6,7 +6,8 @@ import { auth } from '@clerk/nextjs/server';
 import { getUserInfo } from '@/lib/actions/user.action';
 import { getCommentsByLesson } from '@/lib/actions/comment.action';
 import { ICommentItem } from '@/types';
-import { formatDate, timeAgo } from '@/utils';
+import { timeAgo } from '@/utils';
+import CommentReply from './CommentReply';
 const page = async ({
   params,
   searchParams,
@@ -40,7 +41,7 @@ const page = async ({
             height={40}
           />
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 w-full">
           <div className="flex items-center gap-3">
             <h4 className="font-bold">{comment.user.name}</h4>
             <span className="text-sm text-gray-400 font-medium">
@@ -50,11 +51,11 @@ const page = async ({
           <p className="mb-3 text-sm leading-relaxed text-gray-900 dark:text-white">
             {comment.content}
           </p>
-          <div className="flex items-center gap-5 text-sm text-gray-400 font-medium">
-            <span>{formatDate(comment.created_at)}</span>
-            <span className="rounded-full size-1 bg-gray-300"></span>
-            <button type="button">Reply</button>
-          </div>
+          <CommentReply
+            lessonId={lesson?._id.toString() || ""}
+            userId={findUser?._id.toString() || ""}
+            comment={comment}
+          />
         </div>
       </div>
     );
