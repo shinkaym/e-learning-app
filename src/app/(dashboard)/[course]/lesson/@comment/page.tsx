@@ -1,17 +1,29 @@
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-const page = () => {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { getCourseBySlug } from '@/lib/actions/course.action';
+import { getLessonBySlug } from '@/lib/actions/lession.action';
+import CommentForm from './CommentForm';
+const page = async ({
+  params,
+  searchParams,
+}: {
+  params: {
+    course: string;
+  };
+  searchParams: {
+    slug: string;
+  };
+}) => {
+  const course = params.course;
+  const slug = searchParams.slug;
+  const findCourse = await getCourseBySlug({ slug: course });
+  if (!findCourse) return null;
+  const lesson = await getLessonBySlug({
+    slug: slug,
+    course: findCourse?._id.toString(),
+  });
   return (
     <div>
-      <div className="flex flex-col gap-5 mt-10">
-        <Textarea
-          placeholder="Enter your comment..."
-          className="min-h-[150px]"
-        />
-        <Button variant="primary" className="w-fit ml-auto">
-          Post comment
-        </Button>
-      </div>
+      <CommentForm></CommentForm>
       <div className="flex flex-col gap-5 mt-10">
         <h2 className="text-2xl font-bold">Comments</h2>
         <div className="flex flex-col gap-3">
