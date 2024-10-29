@@ -12,7 +12,8 @@ import Lesson from '@/database/lesson.model';
 export async function createUser(params: TCreateUserParams) {
   try {
     connectToDatabase();
-    const user = await User.create(params);
+    const user = new User(params);
+    await user.save();
     return user;
   } catch (error) {
     console.log(error);
