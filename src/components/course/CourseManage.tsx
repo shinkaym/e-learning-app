@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { commonClassNames, courseStatus } from '@/constants';
+import { allValue, commonClassNames, courseStatus } from '@/constants';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,7 +24,8 @@ import useQueryString from '@/hooks/useQueryString';
 const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { createQueryString } = useQueryString();
+  const { handleSearchData, handleSelectStatus } = useQueryString();
+
   const handleDeleteCourse = (slug: string) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -67,7 +68,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
             path: '/manage/course',
           });
           toast.success('Cập nhật trạng thái thành công!');
-          router.push(`${pathname}?${createQueryString('status', '')}&${createQueryString('search', '')}`);
+          // router.push(`${pathname}?${createQueryString('status', '')}&${createQueryString('search', '')}`);
         }
       });
     } catch (error) {
@@ -75,21 +76,15 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
     }
   };
 
-  const handleSelectStatus = (status: ECourseStatus) => {
-    router.push(`${pathname}?${createQueryString('status', status)}`);
-  };
-  const handleSearchCourse = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    router.push(`${pathname}?${createQueryString('search', e.target.value)}`);
-  }, 500);
   const [page, setPage] = useState(1);
   const handleChangePage = (type: 'prev' | 'next') => {
     if (type === 'prev' && page === 1) return;
     if (type === 'prev') setPage((prev) => prev - 1);
     if (type === 'next') setPage((prev) => prev + 1);
   };
-  useEffect(() => {
-    router.push(`${pathname}?${createQueryString('page', page.toString())}`);
-  }, [page]);
+  // useEffect(() => {
+  //   router.push(`${pathname}?${createQueryString('page', page.toString())}`);
+  // }, [page]);
 
   return (
     <>
@@ -98,7 +93,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
         <Heading className=''>Quản lý khóa học</Heading>
         <div className='flex gap-3'>
           <div className='w-full lg:w-[300px]'>
-            <Input placeholder='Tìm kiếm khóa học...' onChange={(e) => handleSearchCourse(e)} />
+            <Input placeholder='Tìm kiếm khóa học...' onChange={handleSearchData} />
           </div>
           <Select onValueChange={(value) => handleSelectStatus(value as ECourseStatus)}>
             <SelectTrigger className='w-[180px]'>
@@ -106,6 +101,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+              <SelectItem value={allValue}>Tất cả</SelectItem>
                 {courseStatus.map((status) => (
                   <SelectItem value={status.value} key={status.value}>
                     {status.title}
@@ -173,14 +169,14 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
             })}
         </TableBody>
       </Table>
-      <div className='flex justify-end gap-3 mt-5'>
+      {/* <div className='flex justify-end gap-3 mt-5'>
         <button className={commonClassNames.paginationButton} onClick={() => handleChangePage('prev')}>
           <IconLeftArrow />
         </button>
         <button className={commonClassNames.paginationButton} onClick={() => handleChangePage('next')}>
           <IconRightArrow />
         </button>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -3,7 +3,7 @@
 'use server';
 
 import Course, { ICourse } from '@/database/course.model';
-import { StudyCoursesProps, TCourseUpdateParams, TCreateCourseParams, TGetAllCourseParams, TUpdateCourseParams } from '@/types';
+import { StudyCoursesProps, TCourseUpdateParams, TCreateCourseParams, TFilterData, TGetAllCourseParams, TUpdateCourseParams } from '@/types';
 import { connectToDatabase } from '../mongoose';
 import { revalidatePath } from 'next/cache';
 import Lecture from '@/database/lecture.model';
@@ -33,7 +33,7 @@ export async function getAllCoursesPublic(
   }
 }
 export async function getAllCourses(
-  params: TGetAllCourseParams
+  params: TFilterData
 ): Promise<ICourse[] | undefined> {
   try {
     connectToDatabase();

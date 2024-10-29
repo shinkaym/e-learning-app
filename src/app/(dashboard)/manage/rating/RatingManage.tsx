@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ratingList, ratingStatus } from "@/constants";
+import { allValue, ratingList, ratingStatus } from "@/constants";
 import useQueryString from "@/hooks/useQueryString";
 import { deleteRating, updateRating } from '@/lib/actions/rating.action';
 import { TRatingItem } from '@/types';
@@ -30,10 +30,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
 const RatingManage = ({ ratings }: { ratings: any }) => {
-  const { createQueryString, router, pathname } = useQueryString();
-  const handleSelectStatus = (status: ERatingStatus) => {
-    router.push(`${pathname}?${createQueryString("status", status)}`);
-  };
+  const { handleSearchData, handleSelectStatus } = useQueryString();
+  
   const handleUpdateRating = async (id: string) => {
     try {
       await updateRating(id);
@@ -64,18 +62,23 @@ const RatingManage = ({ ratings }: { ratings: any }) => {
         <Heading className="">Quản lý đánh giá</Heading>
         <div className="flex gap-3">
           <div className="w-full lg:w-[300px]">
-            <Input placeholder="Tìm kiếm đánh giá..." />
+          <Input
+              placeholder="Tìm kiếm đánh giá..."
+              onChange={handleSearchData}
+            />
           </div>
           <Select
             onValueChange={(value) =>
               handleSelectStatus(value as ERatingStatus)
             }
+            defaultValue={allValue}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+              <SelectItem value={allValue}>Tất cả</SelectItem>
                 {ratingStatus.map((status) => (
                   <SelectItem value={status.value} key={status.value}>
                     {status.title}
