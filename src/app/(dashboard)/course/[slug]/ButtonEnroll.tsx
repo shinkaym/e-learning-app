@@ -9,10 +9,12 @@ const ButtonEnroll = ({
   user,
   courseId,
   amount,
+  coupon,
 }: {
   user: IUser | null | undefined;
   courseId: string;
   amount: number;
+  coupon: string;
 }) => {
   const router = useRouter();
   const handleEnrollCourse = async () => {
@@ -27,6 +29,7 @@ const ButtonEnroll = ({
       course: courseId,
       total: amount,
       amount: amount,
+      coupon,
     });
     console.log("handleEnrollCourse ~ newOrder:", newOrder);
     if (newOrder.code) {
