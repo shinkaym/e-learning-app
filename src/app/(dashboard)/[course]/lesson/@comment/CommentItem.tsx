@@ -3,6 +3,8 @@ import { ICommentItem } from "@/types";
 import { getRepliesComment, timeAgo } from "@/utils";
 import Image from "next/image";
 import CommentReply from "./CommentReply";
+import { ECommentStatus } from '@/types/enums';
+import { cn } from '@/lib/utils';
 interface ICommentItemProps {
   comment: ICommentItem;
   lessonId: string;
@@ -18,10 +20,14 @@ const CommentItem = ({
   const replies = getRepliesComment(comments, comment._id);
   const level = comment.level || 0;
   const COMMENT_SPACING = 55;
+  const isPending = comment.status === ECommentStatus.PENDING;
   return (
     <>
       <div
-        className="flex items-start gap-3 ml-auto dark:border-opacity-50"
+        className={cn("flex items-start gap-3 ml-auto dark:border-opacity-50", {
+          "opacity-50 pointer-events-none": isPending,
+          "mt-5 first:mt-0": level === 0,
+        })}
         style={{
           width: `calc(100% - ${level * COMMENT_SPACING}px)`,
         }}
@@ -46,11 +52,13 @@ const CommentItem = ({
             <p className="mb-3 text-sm leading-relaxed text-gray-600 dark:text-white font-medium">
               {comment.content}
             </p>
-            <CommentReply
-              lessonId={lessonId}
-              userId={userId}
-              comment={comment}
-            />
+            {!isPending && (
+              <CommentReply
+                lessonId={lessonId}
+                userId={userId}
+                comment={comment}
+              />
+            )}
           </div>
         </div>
       </div>

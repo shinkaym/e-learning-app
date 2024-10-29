@@ -12,6 +12,7 @@ import { createComment } from '@/lib/actions/comment.action';
 import { cn } from '@/lib/utils';
 import { ICommentItem } from '@/types';
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
@@ -28,18 +29,23 @@ interface CommentFormProps {
   lessonId: string;
   comment?: ICommentItem;
   isReply?: boolean;
+  closeReply?: () => void;
 }
 const CommentForm = ({
   userId,
   lessonId,
   comment,
   isReply,
+  closeReply
 }: CommentFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
   const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+  const slug = useSearchParams().get("slug");
+  const path = `${pathname}?slug=${slug}`;
   async function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(async () => {
       const newComment = await createComment({
@@ -48,6 +54,7 @@ const CommentForm = ({
         user: userId,
         level: comment && comment?.level >= 0 ? comment?.level + 1 : 0,
         parentId: comment?._id,
+        path
       });
       if (!newComment) {
         toast.error("Failed to post comment");
@@ -55,6 +62,7 @@ const CommentForm = ({
       }
       toast.success("Comment posted successfully");
       form.setValue("content", "");
+      closeReply?.();
     });
   }
   return (
