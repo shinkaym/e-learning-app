@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { StatusBadge, TableAction } from "@/components/common";
 import PaginationBtn from "@/components/common/PaginationBtn";
@@ -20,13 +21,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ratingStatus } from "@/constants";
+import { ratingList, ratingStatus } from "@/constants";
 import useQueryString from "@/hooks/useQueryString";
+import { deleteRating, updateRating } from '@/lib/actions/rating.action';
+import { TRatingItem } from '@/types';
 import { ERatingStatus } from "@/types/enums";
-const RatingManage = () => {
+import Image from 'next/image';
+import Link from 'next/link';
+import Swal from 'sweetalert2';
+const RatingManage = ({ ratings }: { ratings: any }) => {
   const { createQueryString, router, pathname } = useQueryString();
   const handleSelectStatus = (status: ERatingStatus) => {
     router.push(`${pathname}?${createQueryString("status", status)}`);
+  };
+  const handleUpdateRating = async (id: string) => {
+    try {
+      await updateRating(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDeleteRating = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Bạn có chắc muốn xóa đánh giá này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Xóa luôn",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deleteRating(id);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>
@@ -67,31 +97,66 @@ const RatingManage = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell>
-              <strong>Khóa học tuyệt vời quá anh ơi</strong>
-            </TableCell>
-            <TableCell>
-              <strong>Khóa học photoshop</strong>
-            </TableCell>
-            <TableCell>
-              <strong>Evondev</strong>
-            </TableCell>
-            <TableCell>
-              <StatusBadge
-                item={{
-                  className: "bg-green-100 text-green-500",
-                  title: "Đã duyệt",
-                }}
-              ></StatusBadge>
-            </TableCell>
-            <TableCell>
-              <TableAction>
-                <TableActionItem type="approve"></TableActionItem>
-                <TableActionItem type="delete"></TableActionItem>
-              </TableAction>
-            </TableCell>
-          </TableRow>
+        {ratings.length > 0 &&
+            ratings.map((rating: TRatingItem) => {
+              const ratingItemStatus = ratingStatus.find(
+                (item) => item.value === rating.status
+              );
+              const icon = ratingList.find(
+                (item) => item.value === rating.rate
+              )?.title;
+              return (
+                <TableRow key={rating.rate}>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <strong>{rating.content}</strong>
+                        <Image
+                          width={20}
+                          height={20}
+                          alt=""
+                          src={`/rating/${icon}.png`}
+                        />
+                      </div>
+                      <time>
+                        {new Date(rating.created_at).toLocaleDateString(
+                          "vi-Vi"
+                        )}
+                      </time>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/course/${rating.course.slug}`}
+                      className="font-semibold hover:text-primary"
+                      target="_blank"
+                    >
+                      {rating.course.title}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <strong>{rating.user.name}</strong>
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge item={ratingItemStatus}></StatusBadge>
+                  </TableCell>
+                  <TableCell>
+                    <TableAction>
+                      {rating.status !== ERatingStatus.ACTIVE && (
+                        <TableActionItem
+                          type="approve"
+                          onClick={() => handleUpdateRating(rating._id)}
+                        ></TableActionItem>
+                      )}
+                      <TableActionItem
+                        type="delete"
+                        onClick={() => handleDeleteRating(rating._id)}
+                      ></TableActionItem>
+                    </TableAction>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
       <PaginationBtn></PaginationBtn>

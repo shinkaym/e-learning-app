@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { IconClock, IconEye, IconStar } from '../icons';
 import { ObjectId } from 'mongoose';
 import { commonClassNames } from '@/constants';
@@ -9,7 +11,7 @@ import { StudyCoursesProps } from '@/types';
 import { getCourseLessonsInfo } from '@/lib/actions/course.action';
 import { formatMinutesToHour, formatNumberToK } from '@/utils';
 
-const CourseItem = async ({
+const CourseItem = ({
   data,
   cta,
   url = "",
@@ -18,8 +20,14 @@ const CourseItem = async ({
   cta?: string;
   url?: string;
 }) => {
-  const { duration }: any =
-    (await getCourseLessonsInfo({ slug: data.slug })) || 0;
+  const [duration, setDuration] = useState(0);
+  useEffect(() => {
+    async function getDuration() {
+      const res = await getCourseLessonsInfo({ slug: data.slug });
+      setDuration(res?.duration || 0);
+    }
+    getDuration();
+  }, [data.slug]);
   const courseInfo: {
     title: string | number | ObjectId;
     icon: (className?: string) => ReactNode;
